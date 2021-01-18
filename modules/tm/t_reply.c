@@ -948,6 +948,15 @@ static enum rps t_should_relay_response( struct cell *Trans , int new_code,
 			/* if all_final return lowest */
 			picked_branch = t_pick_branch( Trans, &picked_code, &do_cancel);
 			if (picked_branch==-2) { /* branches open yet */
+				
+				/* 486_multi_branches_nowait */
+				if (new_code == 486) {
+							*should_store=0;
+							*should_relay=branch; 
+							picked_branch=-1;
+							return RPS_COMPLETED;
+				}
+
 				*should_store=1;
 				*should_relay=-1;
 				picked_branch=-1;
