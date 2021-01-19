@@ -852,7 +852,8 @@ static enum rps t_should_relay_response( struct cell *Trans , int new_code,
 	int picked_code;
 	int inv_through;
 	int do_cancel;
-
+	branch_bm_t cb;
+	
 	/* note: this code never lets replies to CANCEL go through;
 	   we generate always a local 200 for CANCEL; 200s are
 	   not relayed because it's not an INVITE transaction;
@@ -951,10 +952,17 @@ static enum rps t_should_relay_response( struct cell *Trans , int new_code,
 				
 				/* 486_multi_branches_nowait */
 				if (new_code == 486) {
-							*should_store=0;
-							*should_relay=branch; 
-							picked_branch=-1;
-							return RPS_COMPLETED;
+						cb = 0;
+						which_cancel( Trans, &cb );
+						if(cb)  cancel_uacs( Trans, cb); 
+					
+						*should_store=0;
+						*should_relay=branch; 
+						picked_branch=-1;
+						
+						LM_DBG("EXEC  '486 - multi branches nowait  ( cb=%d , branch=%d) !' \n" , cb , branch);
+						
+						return RPS_COMPLETED;
 				}
 
 				*should_store=1;
@@ -969,7 +977,7 @@ static enum rps t_should_relay_response( struct cell *Trans , int new_code,
 				goto discard;
 			}
 			if (do_cancel) {
-				branch_bm_t cb = 0;
+				cb = 0;
 				which_cancel( Trans, &cb );
 				cleanup_uac_timers(Trans);
 				cancel_uacs( Trans, cb);
