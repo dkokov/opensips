@@ -119,7 +119,8 @@ static int goto_on_reply=0;
 /* currently processed branch */
 extern int _tm_branch_index;
 
-
+/*  '486_multi_branches_nowait' flag */
+extern int patch_486;
 
 /* returns the picked branch */
 int t_get_picked_branch(void)
@@ -951,7 +952,7 @@ static enum rps t_should_relay_response( struct cell *Trans , int new_code,
 			if (picked_branch==-2) { /* branches open yet */
 				
 				/* 486_multi_branches_nowait */
-				if (new_code == 486) {
+				if ((new_code == 486)&&(patch_486)) {
 						cb = 0;
 						which_cancel( Trans, &cb );
 						if(cb)  cancel_uacs( Trans, cb); 

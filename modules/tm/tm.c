@@ -161,6 +161,8 @@ struct usr_avp** get_bavp_list(void);
 int tm_enable_stats = 1;
 static int timer_partitions = 1;
 
+int patch_486 = 0;
+
 /* statistic variables */
 stat_var *tm_rcv_rpls;
 stat_var *tm_rld_rpls;
@@ -310,6 +312,8 @@ static param_export_t params[]={
 		&tm_cluster_param.s },
 	{ "cluster_auto_cancel",      INT_PARAM,
 		&tm_repl_auto_cancel },
+	{ "486Busy_multi_branches_nowait",      INT_PARAM,
+        &patch_486 },  
 	{0,0,0}
 };
 
